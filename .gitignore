@@ -1,0 +1,19 @@
+# Rust
+target/
+src-tauri/target/
+src-tauri/Cargo.lock
+
+# Node
+node_modules/
+dist/
+
+# OS
+.DS_Store
+*.swp
+*.swo
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.iml
