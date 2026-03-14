@@ -76,7 +76,7 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    background: #18191c;
+    background: var(--bg-deep);
     position: relative;
     overflow: hidden;
   }
@@ -145,7 +145,7 @@
   .app-desc {
     margin: 4px 0 0;
     font-size: 13px;
-    color: #6a6c7a;
+    color: var(--text-muted);
     letter-spacing: 0.3px;
   }
 
@@ -163,8 +163,8 @@
     width: 260px;
     padding: 28px 24px 22px;
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    background: var(--bg-tertiary);
     cursor: pointer;
     transition: all 0.25s ease;
     text-align: left;
@@ -189,7 +189,7 @@
   }
 
   .card:hover {
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: var(--accent);
     transform: translateY(-3px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
   }
@@ -228,13 +228,13 @@
   .card-body h3 {
     font-size: 16px;
     font-weight: 600;
-    color: #e8e9ed;
+    color: var(--text-primary);
     margin: 0 0 8px;
   }
 
   .card-body p {
     font-size: 12px;
-    color: #6a6c7a;
+    color: var(--text-muted);
     line-height: 1.5;
     margin: 0;
   }
@@ -245,9 +245,9 @@
     font-size: 11px;
     padding: 4px 10px;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.05);
-    color: #6a6c7a;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--bg-hover);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
     font-family: inherit;
   }
 
@@ -258,8 +258,8 @@
     gap: 10px;
     padding: 14px 28px;
     border-radius: 12px;
-    border: 1.5px dashed rgba(255, 255, 255, 0.08);
-    color: #4a4c5a;
+    border: 1.5px dashed var(--border);
+    color: var(--text-muted);
     font-size: 13px;
     margin-bottom: 24px;
   }
