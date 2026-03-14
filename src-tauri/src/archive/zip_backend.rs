@@ -7,7 +7,7 @@ use zip::{CompressionMethod, ZipArchive, ZipWriter};
 
 use super::entry::{ArchiveEntry, format_datetime};
 use super::ArchiveFormat;
-use crate::progress::ProgressSender;
+use crate::progress::Progress;
 
 pub struct ZipBackend {
     path: PathBuf,
@@ -31,7 +31,7 @@ impl ZipBackend {
         path: &Path,
         files: &[PathBuf],
         base_dir: &Path,
-        progress: ProgressSender,
+        progress: &dyn Progress,
     ) -> Result<()> {
         let file =
             File::create(path).with_context(|| format!("Cannot create {}", path.display()))?;
@@ -147,7 +147,7 @@ impl super::ArchiveBackend for ZipBackend {
         Ok(entries)
     }
 
-    fn extract_all(&self, dest: &Path, progress: ProgressSender) -> Result<()> {
+    fn extract_all(&self, dest: &Path, progress: &dyn Progress) -> Result<()> {
         let mut archive = self.open_archive()?;
         let total = archive.len() as u64;
 
@@ -176,7 +176,7 @@ impl super::ArchiveBackend for ZipBackend {
         &self,
         entries: &[String],
         dest: &Path,
-        progress: ProgressSender,
+        progress: &dyn Progress,
     ) -> Result<()> {
         let mut archive = self.open_archive()?;
         let total = entries.len() as u64;
@@ -214,7 +214,7 @@ impl super::ArchiveBackend for ZipBackend {
         &mut self,
         files: &[PathBuf],
         archive_path_prefix: &str,
-        progress: ProgressSender,
+        progress: &dyn Progress,
     ) -> Result<()> {
         let src_file = File::open(&self.path)?;
         let mut archive = ZipArchive::new(src_file)?;
@@ -266,7 +266,7 @@ impl super::ArchiveBackend for ZipBackend {
         Ok(())
     }
 
-    fn delete_entries(&mut self, entries: &[String], progress: ProgressSender) -> Result<()> {
+    fn delete_entries(&mut self, entries: &[String], progress: &dyn Progress) -> Result<()> {
         let src_file = File::open(&self.path)?;
         let mut archive = ZipArchive::new(src_file)?;
 

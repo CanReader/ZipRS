@@ -6,7 +6,7 @@ use anyhow::{Context, Result, bail};
 use serde::Serialize;
 use std::path::{Path, PathBuf};
 
-use crate::progress::ProgressSender;
+use crate::progress::Progress;
 use entry::ArchiveEntry;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -77,37 +77,24 @@ impl ArchiveFormat {
     pub fn supports_modification(&self) -> bool {
         matches!(self, Self::Zip)
     }
-
-    pub fn default_extension(&self) -> &str {
-        match self {
-            Self::Zip => ".zip",
-            Self::TarGz => ".tar.gz",
-            Self::TarBz2 => ".tar.bz2",
-            Self::TarZst => ".tar.zst",
-            Self::Tar => ".tar",
-            Self::Gz => ".gz",
-            Self::Bz2 => ".bz2",
-            Self::Zst => ".zst",
-        }
-    }
 }
 
 pub trait ArchiveBackend: Send {
     fn list_entries(&self) -> Result<Vec<ArchiveEntry>>;
-    fn extract_all(&self, dest: &Path, progress: ProgressSender) -> Result<()>;
+    fn extract_all(&self, dest: &Path, progress: &dyn Progress) -> Result<()>;
     fn extract_entries(
         &self,
         entries: &[String],
         dest: &Path,
-        progress: ProgressSender,
+        progress: &dyn Progress,
     ) -> Result<()>;
     fn add_files(
         &mut self,
         files: &[PathBuf],
         archive_path_prefix: &str,
-        progress: ProgressSender,
+        progress: &dyn Progress,
     ) -> Result<()>;
-    fn delete_entries(&mut self, entries: &[String], progress: ProgressSender) -> Result<()>;
+    fn delete_entries(&mut self, entries: &[String], progress: &dyn Progress) -> Result<()>;
     fn format(&self) -> ArchiveFormat;
 }
 
@@ -134,7 +121,7 @@ pub fn open_archive(path: &Path) -> Result<Box<dyn ArchiveBackend>> {
     }
 }
 
-pub fn test_archive(backend: &dyn ArchiveBackend, progress: ProgressSender) -> Result<usize> {
+pub fn test_archive(backend: &dyn ArchiveBackend, progress: &dyn Progress) -> Result<usize> {
     let entries = backend.list_entries()?;
     let total = entries.len() as u64;
     for (i, entry) in entries.iter().enumerate() {
@@ -149,7 +136,7 @@ pub fn create_archive(
     files: &[PathBuf],
     base_dir: &Path,
     format: ArchiveFormat,
-    progress: ProgressSender,
+    progress: &dyn Progress,
 ) -> Result<()> {
     match format {
         ArchiveFormat::Zip => zip_backend::ZipBackend::create(path, files, base_dir, progress),

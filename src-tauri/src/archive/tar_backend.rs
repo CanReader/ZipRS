@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 
 use super::entry::{ArchiveEntry, format_datetime};
 use super::ArchiveFormat;
-use crate::progress::ProgressSender;
+use crate::progress::Progress;
 
 pub struct TarBackend {
     path: PathBuf,
@@ -45,7 +45,7 @@ impl TarBackend {
         files: &[PathBuf],
         base_dir: &Path,
         format: ArchiveFormat,
-        progress: ProgressSender,
+        progress: &dyn Progress,
     ) -> Result<()> {
         let file =
             File::create(path).with_context(|| format!("Cannot create {}", path.display()))?;
@@ -140,7 +140,7 @@ impl super::ArchiveBackend for TarBackend {
         Ok(entries)
     }
 
-    fn extract_all(&self, dest: &Path, progress: ProgressSender) -> Result<()> {
+    fn extract_all(&self, dest: &Path, progress: &dyn Progress) -> Result<()> {
         let reader = self.open_reader()?;
         let mut archive = tar::Archive::new(reader);
         let entries: Vec<_> = archive.entries()?.collect::<Result<_, _>>()?;
@@ -160,7 +160,7 @@ impl super::ArchiveBackend for TarBackend {
         &self,
         target_entries: &[String],
         dest: &Path,
-        progress: ProgressSender,
+        progress: &dyn Progress,
     ) -> Result<()> {
         let reader = self.open_reader()?;
         let mut archive = tar::Archive::new(reader);
@@ -200,12 +200,12 @@ impl super::ArchiveBackend for TarBackend {
         &mut self,
         _files: &[PathBuf],
         _archive_path_prefix: &str,
-        _progress: ProgressSender,
+        _progress: &dyn Progress,
     ) -> Result<()> {
         bail!("Adding files to TAR archives is not supported. Create a new archive instead.")
     }
 
-    fn delete_entries(&mut self, _entries: &[String], _progress: ProgressSender) -> Result<()> {
+    fn delete_entries(&mut self, _entries: &[String], _progress: &dyn Progress) -> Result<()> {
         bail!("Deleting from TAR archives is not supported. Create a new archive instead.")
     }
 
