@@ -8,7 +8,8 @@ fn main() {
         && matches!(
             args[1].as_str(),
             "list" | "ls" | "extract" | "x" | "create" | "c" | "add" | "delete" | "rm"
-                | "test" | "t" | "info" | "help" | "--help" | "-h" | "--version" | "-V"
+                | "test" | "t" | "info" | "tree" | "search" | "find" | "cat" | "convert"
+                | "diff" | "stats" | "types" | "help" | "--help" | "-h" | "--version" | "-V"
         );
 
     if has_subcommand {
