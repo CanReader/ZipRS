@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+  --bg-deep: #18191c;
   --bg-primary: #1c1d20;
   --bg-secondary: #222327;
   --bg-tertiary: #2a2b30;
@@ -15,12 +16,18 @@
   --danger: #e25555;
   --success: #4abb8a;
   --warning: #e2a94a;
+  --scrollbar-thumb: #454650;
+  --scrollbar-thumb-hover: #555665;
+  --separator: #35363d;
+  --selected-hover: #3268b8;
+  --dir-color: #4a9eff;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: background-color 0.15s, color 0.1s, border-color 0.15s;
 }
 
 html, body, #app {
@@ -34,7 +41,6 @@ html, body, #app {
   user-select: none;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -43,14 +49,13 @@ html, body, #app {
   background: var(--bg-primary);
 }
 ::-webkit-scrollbar-thumb {
-  background: #454650;
+  background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #555665;
+  background: var(--scrollbar-thumb-hover);
 }
 
-/* Selection */
 ::selection {
   background: var(--accent);
   color: white;
