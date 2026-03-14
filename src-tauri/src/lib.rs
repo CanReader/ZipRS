@@ -1,6 +1,7 @@
-mod archive;
+pub mod archive;
+pub mod cli;
 mod commands;
-mod progress;
+pub mod progress;
 
 use commands::ArchiveState;
 
