@@ -4,9 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "build:frontend": "vite build",
+    "dev:frontend": "vite",
     "preview": "vite preview",
+    "check": "svelte-check && cd src-tauri && cargo check",
+    "lint": "cd src-tauri && cargo clippy -- -W warnings",
+    "clean": "node -e \"const fs=require('fs');['dist','src-tauri/target'].forEach(d=>{try{fs.rmSync(d,{recursive:true,force:true})}catch{}})\"",
     "tauri": "tauri"
   },
   "devDependencies": {
