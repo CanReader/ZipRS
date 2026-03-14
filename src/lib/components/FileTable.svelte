@@ -114,7 +114,7 @@
           <!-- Name -->
           <div class="flex items-center gap-2 px-3 flex-1 min-w-[200px] overflow-hidden">
             <IconComponent size={16} color={iconColor} class="shrink-0" />
-            <span class="truncate" style="color: {entry.is_directory ? '#4a9eff' : 'var(--text-primary)'}">{entry.name}</span>
+            <span class="truncate" style="color: {entry.is_directory ? 'var(--dir-color)' : 'var(--text-primary)'}">{entry.name}</span>
           </div>
           <!-- Size -->
           <div class="w-[90px] px-3 text-right text-[var(--text-secondary)]">
@@ -169,7 +169,7 @@
     color: white;
   }
   .file-row.selected:hover {
-    background: #3268b8;
+    background: var(--selected-hover);
   }
   .file-row.selected div {
     color: rgba(255, 255, 255, 0.85) !important;

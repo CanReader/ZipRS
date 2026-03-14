@@ -27,7 +27,7 @@ export function fileTypeDisplay(name: string, isDir: boolean): string {
 }
 
 export function getFileIconColor(name: string, isDir: boolean): string {
-  if (isDir) return "#4a9eff";
+  if (isDir) return getComputedStyle(document.documentElement).getPropertyValue("--dir-color").trim() || "#4a9eff";
   const ext = fileExtension(name).toLowerCase();
   const colors: Record<string, string> = {
     // Documents
