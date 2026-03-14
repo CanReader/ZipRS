@@ -6,7 +6,7 @@ use tauri::{AppHandle, State};
 
 use crate::archive::{self, ArchiveFormat};
 use crate::archive::entry::ArchiveEntry;
-use crate::progress::ProgressSender;
+use crate::progress::GuiProgress;
 
 pub struct ArchiveState {
     pub path: Mutex<Option<PathBuf>>,
@@ -73,10 +73,10 @@ pub async fn extract_all(
     let dest_path = PathBuf::from(dest);
 
     tokio::task::spawn_blocking(move || {
-        let progress = ProgressSender::new(app);
+        let progress = GuiProgress::new(app);
         let backend = archive::open_archive(&archive_path).map_err(|e| e.to_string())?;
         backend
-            .extract_all(&dest_path, progress)
+            .extract_all(&dest_path, &progress)
             .map_err(|e| e.to_string())?;
         Ok(format!("Extracted to {}", dest_path.display()))
     })
@@ -101,10 +101,10 @@ pub async fn extract_selected(
     let count = entries.len();
 
     tokio::task::spawn_blocking(move || {
-        let progress = ProgressSender::new(app);
+        let progress = GuiProgress::new(app);
         let backend = archive::open_archive(&archive_path).map_err(|e| e.to_string())?;
         backend
-            .extract_entries(&entries, &dest_path, progress)
+            .extract_entries(&entries, &dest_path, &progress)
             .map_err(|e| e.to_string())?;
         Ok(format!("Extracted {count} items to {}", dest_path.display()))
     })
@@ -129,10 +129,10 @@ pub async fn extract_here(
         .to_path_buf();
 
     tokio::task::spawn_blocking(move || {
-        let progress = ProgressSender::new(app);
+        let progress = GuiProgress::new(app);
         let backend = archive::open_archive(&archive_path).map_err(|e| e.to_string())?;
         backend
-            .extract_all(&dest, progress)
+            .extract_all(&dest, &progress)
             .map_err(|e| e.to_string())?;
         Ok(format!("Extracted to {}", dest.display()))
     })
@@ -158,10 +158,10 @@ pub async fn add_files(
 
     let path_clone = archive_path.clone();
     tokio::task::spawn_blocking(move || {
-        let progress = ProgressSender::new(app);
+        let progress = GuiProgress::new(app);
         let mut backend = archive::open_archive(&path_clone).map_err(|e| e.to_string())?;
         backend
-            .add_files(&file_paths, &archive_prefix, progress)
+            .add_files(&file_paths, &archive_prefix, &progress)
             .map_err(|e| e.to_string())?;
         Ok::<_, String>(())
     })
@@ -203,10 +203,10 @@ pub async fn delete_entries(
 
     let path_clone = archive_path.clone();
     tokio::task::spawn_blocking(move || {
-        let progress = ProgressSender::new(app);
+        let progress = GuiProgress::new(app);
         let mut backend = archive::open_archive(&path_clone).map_err(|e| e.to_string())?;
         backend
-            .delete_entries(&entries, progress)
+            .delete_entries(&entries, &progress)
             .map_err(|e| e.to_string())?;
         Ok::<_, String>(())
     })
@@ -247,8 +247,8 @@ pub async fn create_archive(
     let fmt = ArchiveFormat::from_string(&format).map_err(|e| e.to_string())?;
 
     tokio::task::spawn_blocking(move || {
-        let progress = ProgressSender::new(app);
-        archive::create_archive(&path_buf, &file_paths, &base, fmt, progress)
+        let progress = GuiProgress::new(app);
+        archive::create_archive(&path_buf, &file_paths, &base, fmt, &progress)
             .map_err(|e| e.to_string())?;
         Ok(path)
     })
@@ -269,9 +269,9 @@ pub async fn test_archive(
         .ok_or("No archive open")?;
 
     tokio::task::spawn_blocking(move || {
-        let progress = ProgressSender::new(app);
+        let progress = GuiProgress::new(app);
         let backend = archive::open_archive(&archive_path).map_err(|e| e.to_string())?;
-        let count = archive::test_archive(&*backend, progress).map_err(|e| e.to_string())?;
+        let count = archive::test_archive(&*backend, &progress).map_err(|e| e.to_string())?;
         Ok(format!(
             "Archive OK — {count} entries verified successfully"
         ))
@@ -297,10 +297,10 @@ pub async fn extract_and_open(
         let tmp_dir = std::env::temp_dir().join("ziprs_preview");
         let _ = std::fs::create_dir_all(&tmp_dir);
 
-        let progress = ProgressSender::new(app);
+        let progress = GuiProgress::new(app);
         let backend = archive::open_archive(&archive_path).map_err(|e| e.to_string())?;
         backend
-            .extract_entries(&[entry_path.clone()], &tmp_dir, progress)
+            .extract_entries(&[entry_path.clone()], &tmp_dir, &progress)
             .map_err(|e| e.to_string())?;
 
         Ok::<_, String>(tmp_dir.join(&entry_path))
@@ -333,10 +333,10 @@ pub async fn drag_out(
     let tmp_clone = tmp_dir.clone();
     let entries_clone = entries.clone();
     tokio::task::spawn_blocking(move || {
-        let progress = ProgressSender::new(app);
+        let progress = GuiProgress::new(app);
         let backend = archive::open_archive(&archive_path).map_err(|e| e.to_string())?;
         backend
-            .extract_entries(&entries_clone, &tmp_clone, progress)
+            .extract_entries(&entries_clone, &tmp_clone, &progress)
             .map_err(|e| e.to_string())?;
         Ok::<_, String>(())
     })
