@@ -6,6 +6,7 @@
   import { onMount } from "svelte";
 
   import { store } from "$lib/store.svelte";
+  import { loadSavedTheme } from "$lib/themes";
   import type { OpenArchiveResponse, ProgressPayload } from "$lib/types";
   import WelcomeScreen from "$lib/components/WelcomeScreen.svelte";
   import Toolbar from "$lib/components/Toolbar.svelte";
@@ -33,6 +34,9 @@
   }
 
   onMount(async () => {
+    // Load saved theme
+    store.theme = loadSavedTheme();
+
     // Listen for progress events
     await listen<ProgressPayload>("archive-progress", (event) => {
       store.progress = event.payload;
