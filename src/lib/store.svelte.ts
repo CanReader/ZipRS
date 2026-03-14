@@ -1,4 +1,5 @@
 import type { ArchiveEntry, SortColumn, SortOrder, ProgressPayload } from "./types";
+import { applyTheme } from "./themes";
 
 class AppStore {
   // Archive
@@ -22,6 +23,9 @@ class AppStore {
 
   // Search
   searchQuery = $state("");
+
+  // Theme
+  theme = $state("dark");
 
   // UI
   isBusy = $state(false);
@@ -149,6 +153,11 @@ class AppStore {
     this.searchQuery = "";
     this.isBusy = false;
     this.statusMessage = "Ready";
+  }
+
+  setTheme(id: string) {
+    this.theme = id;
+    applyTheme(id);
   }
 
   toggleSort(column: SortColumn) {
