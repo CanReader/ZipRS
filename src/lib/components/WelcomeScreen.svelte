@@ -26,9 +26,7 @@
   <div class="content">
     <!-- Logo -->
     <div class="logo-area">
-      <div class="logo-ring" class:visible>
-        <img src="/Logo.png" alt="ZipRS" class="logo" class:visible />
-      </div>
+      <img src="/Logo.png" alt="ZipRS" class="logo" class:visible />
       <div class="title-block">
         <h1 class="app-title" class:visible>
           <span class="title-letter" style="transition-delay: 0.12s">Z</span><span class="title-letter" style="transition-delay: 0.15s">i</span><span class="title-letter" style="transition-delay: 0.18s">p</span><span class="title-letter" style="transition-delay: 0.21s">R</span><span class="title-letter" style="transition-delay: 0.24s">S</span>
@@ -171,33 +169,8 @@
     margin-bottom: 36px;
   }
 
-  .logo-ring {
-    position: relative;
-    margin-bottom: 16px;
-  }
-  .logo-ring::after {
-    content: "";
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    border: 2px solid var(--accent);
-    opacity: 0;
-    transform: scale(0.8);
-    transition: opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s;
-    animation: ring-breathe 3s ease-in-out infinite;
-    animation-delay: 1.5s;
-  }
-  .logo-ring.visible::after {
-    opacity: 0.15;
-    transform: scale(1);
-  }
-
-  @keyframes ring-breathe {
-    0%, 100% { transform: scale(1); opacity: 0.15; }
-    50% { transform: scale(1.08); opacity: 0.25; }
-  }
-
   .logo {
+    margin-bottom: 16px;
     width: 96px;
     height: 96px;
     object-fit: contain;
