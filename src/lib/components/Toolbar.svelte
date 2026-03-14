@@ -5,6 +5,7 @@
     FilePlus2, RefreshCw
   } from "lucide-svelte";
   import { store } from "$lib/store.svelte";
+  import ThemeSwitcher from "./ThemeSwitcher.svelte";
 
   interface Props {
     onAction: (action: string) => void;
@@ -87,6 +88,8 @@
 
   <div class="spacer"></div>
 
+  <ThemeSwitcher />
+
   <button onclick={() => onAction("refresh")} disabled={!store.hasArchive || store.isBusy}
     class="tbtn" title="Refresh (F5)">
     <RefreshCw size={15} strokeWidth={2} />
@@ -100,8 +103,8 @@
     height: 44px;
     padding: 0 8px;
     gap: 2px;
-    background: #222327;
-    border-bottom: 1px solid #2e2f36;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--separator);
   }
 
   .btn-group {
@@ -119,18 +122,18 @@
     border-radius: 8px;
     border: none;
     background: transparent;
-    color: #a0a2b0;
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .tbtn:hover:not(:disabled) {
-    background: #32333a;
-    color: #e8e9ed;
+    background: var(--bg-hover);
+    color: var(--text-primary);
   }
 
   .tbtn:active:not(:disabled) {
-    background: #3a3b44;
+    background: var(--bg-tertiary);
   }
 
   .tbtn:disabled {
@@ -148,7 +151,7 @@
   .sep {
     width: 1px;
     height: 22px;
-    background: #35363d;
+    background: var(--separator);
     margin: 0 6px;
     flex-shrink: 0;
   }
