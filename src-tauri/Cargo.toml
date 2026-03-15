@@ -30,3 +30,4 @@ anyhow = "1"
 open = "5"
 clap = { version = "4", features = ["derive"] }
 colored = "2"
+unrar = "0.5"
