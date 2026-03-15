@@ -317,7 +317,7 @@ pub async fn drag_out(
     entries: Vec<String>,
     state: State<'_, ArchiveState>,
     app: AppHandle,
-) -> Result<(), String> {
+) -> Result<Vec<String>, String> {
     let archive_path = state
         .path
         .lock()
@@ -356,15 +356,7 @@ pub async fn drag_out(
         return Err("No files extracted for drag".to_string());
     }
 
-    // Spawn ripdrag with native Wayland backend (our app forces GDK_BACKEND=x11
-    // but ripdrag needs native backend for proper drag-and-drop)
-    let mut cmd = std::process::Command::new("ripdrag");
-    cmd.args(&file_paths);
-    cmd.args(["--no-click", "--and-exit"]);
-    cmd.env_remove("GDK_BACKEND");
-    cmd.spawn().map_err(|e| format!("Failed to start ripdrag: {e}"))?;
-
-    Ok(())
+    Ok(file_paths)
 }
 
 #[tauri::command]
