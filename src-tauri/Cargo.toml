@@ -31,3 +31,4 @@ open = "5"
 clap = { version = "4", features = ["derive"] }
 colored = "2"
 unrar = "0.5"
+tauri-plugin-drag = "2.1"
