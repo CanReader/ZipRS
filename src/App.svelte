@@ -246,9 +246,12 @@
     if (selected.length === 0) return;
     const entryPaths = selected.map((e) => e.path);
     try {
-      store.statusMessage = "Preparing drag...";
-      await invoke("drag_out", { entries: entryPaths });
-      store.statusMessage = "Drag ready — drag files from the popup window";
+      store.statusMessage = "Extracting files for drag...";
+      const filePaths = await invoke<string[]>("drag_out", { entries: entryPaths });
+      store.statusMessage = "Dragging — drop files to destination";
+      const { startDrag } = await import("@crabnebula/tauri-plugin-drag");
+      await startDrag({ item: filePaths, icon: "" });
+      store.statusMessage = "Files dragged successfully";
     } catch (e) {
       store.errorMessage = String(e);
     }

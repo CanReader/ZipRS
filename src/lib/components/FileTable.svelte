@@ -1,5 +1,6 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api/core";
+  import { startDrag } from "@crabnebula/tauri-plugin-drag";
   import {
     Folder, File, FileText, FileImage, FileCode, FileArchive, FileVideo, FileAudio,
     FileSpreadsheet, FileJson, FileType, FileKey, FileLock, FileCog, FileTerminal,
@@ -18,7 +19,72 @@
   let { onAction, onContextMenu }: Props = $props();
   let isDragging = $state(false);
 
+  // Drag-out state
+  let dragStartPos: { x: number; y: number } | null = null;
+  let dragStartIndex: number | null = null;
+  let dragTriggered = false;
+  const DRAG_THRESHOLD = 5;
+
+  function handleRowMouseDown(e: MouseEvent, index: number) {
+    // Only left mouse button, no modifier keys (those are for selection)
+    if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey) return;
+
+    // Ensure this row is selected (or will be selected)
+    if (!store.selectedIndices.includes(index)) {
+      store.selectedIndices = [index];
+      store.lastClickedIndex = index;
+    }
+
+    dragStartPos = { x: e.clientX, y: e.clientY };
+    dragStartIndex = index;
+    dragTriggered = false;
+  }
+
+  function handleWindowMouseMove(e: MouseEvent) {
+    if (!dragStartPos || dragTriggered) return;
+
+    const dx = e.clientX - dragStartPos.x;
+    const dy = e.clientY - dragStartPos.y;
+    if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return;
+
+    // Threshold exceeded — initiate native drag
+    dragTriggered = true;
+    isDragging = true;
+    triggerNativeDrag();
+  }
+
+  function handleWindowMouseUp() {
+    dragStartPos = null;
+    dragStartIndex = null;
+    dragTriggered = false;
+    isDragging = false;
+  }
+
+  async function triggerNativeDrag() {
+    const selected = store.selectedEntries;
+    if (selected.length === 0) return;
+
+    const entryPaths = selected.map((e) => e.path);
+    try {
+      store.statusMessage = "Extracting for drag...";
+      const filePaths = await invoke<string[]>("drag_out", { entries: entryPaths });
+      store.statusMessage = `Dragging ${filePaths.length} file(s)...`;
+      await startDrag({ item: filePaths, icon: "" });
+      store.statusMessage = "Drag complete";
+    } catch (e) {
+      store.errorMessage = String(e);
+    } finally {
+      isDragging = false;
+      dragStartPos = null;
+      dragStartIndex = null;
+      dragTriggered = false;
+    }
+  }
+
   function handleRowClick(e: MouseEvent, index: number) {
+    // Don't process click if we just finished a drag
+    if (dragTriggered) return;
+
     if (e.ctrlKey || e.metaKey) {
       const pos = store.selectedIndices.indexOf(index);
       if (pos >= 0) {
@@ -159,6 +225,8 @@
   ];
 </script>
 
+<svelte:window onmousemove={handleWindowMouseMove} onmouseup={handleWindowMouseUp} />
+
 <div class="flex flex-col flex-1 overflow-hidden">
   <!-- Header -->
   <div class="flex items-center h-7 bg-[var(--bg-secondary)] border-b border-[var(--border)] text-[11px] font-semibold text-[var(--text-secondary)] select-none shrink-0">
@@ -186,6 +254,7 @@
         {@const IconComponent = getFileIcon(entry.name, entry.is_directory)}
         <button
           class="file-row {isSelected ? 'selected' : ''}"
+          onmousedown={(e) => handleRowMouseDown(e, i)}
           onclick={(e) => handleRowClick(e, i)}
           ondblclick={() => handleRowDblClick(i)}
           oncontextmenu={(e) => handleContextMenu(e, i)}
