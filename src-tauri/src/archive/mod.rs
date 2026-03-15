@@ -156,6 +156,9 @@ pub fn create_archive(
         | ArchiveFormat::Tar => {
             tar_backend::TarBackend::create(path, files, base_dir, format, progress)
         }
+        ArchiveFormat::Rar => bail!(
+            "RAR is a proprietary format. Creating RAR archives is not possible with open-source tools. Use ZIP (with Zstd compression) instead for similar or better compression."
+        ),
         _ => bail!(
             "Creating {} archives is not yet supported",
             format.display_name()
