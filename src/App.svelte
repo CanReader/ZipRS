@@ -68,6 +68,11 @@
     await listen("tauri://drag-leave", () => {
       showDropOverlay = false;
     });
+
+    // Handle file association opens (double-click archive in file manager)
+    await listen<string>("open-file-association", (event) => {
+      handleOpenArchive(event.payload);
+    });
   });
 
   // ---- Actions ----
