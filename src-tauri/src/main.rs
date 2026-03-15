@@ -1,5 +1,16 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+/// Attach to the parent process's console on Windows so CLI output is visible.
+/// Required because `windows_subsystem = "windows"` detaches stdout/stderr.
+#[cfg(windows)]
+fn attach_console() {
+    unsafe {
+        let _ = windows_sys::Win32::System::Console::AttachConsole(
+            windows_sys::Win32::System::Console::ATTACH_PARENT_PROCESS,
+        );
+    }
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
@@ -13,6 +24,10 @@ fn main() {
         );
 
     if has_subcommand {
+        // Attach to console so output is visible in the terminal
+        #[cfg(windows)]
+        attach_console();
+
         // CLI mode
         use clap::Parser;
         use colored::Colorize;

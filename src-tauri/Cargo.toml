@@ -8,6 +8,7 @@ description = "A professional archive manager built with Rust + Tauri"
 name = "ziprs_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
@@ -32,3 +33,6 @@ clap = { version = "4", features = ["derive"] }
 colored = "2"
 unrar = "0.5"
 tauri-plugin-drag = "2.1"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = ["Win32_System_Console"] }
