@@ -1,6 +1,11 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api/core";
-  import { Folder, File, FileText, FileImage, FileCode, FileArchive, FileVideo, FileAudio } from "lucide-svelte";
+  import {
+    Folder, File, FileText, FileImage, FileCode, FileArchive, FileVideo, FileAudio,
+    FileSpreadsheet, FileJson, FileType, FileKey, FileLock, FileCog, FileTerminal,
+    FileHeart, Database, Globe, Presentation, Clapperboard, Music, Image,
+    Box, Binary, Shield, Hash, Braces, Terminal, Cpu, HardDrive, Gamepad2, Pen
+  } from "lucide-svelte";
   import { store } from "$lib/store.svelte";
   import { formatSize, formatRatio, fileTypeDisplay, getFileIconColor } from "$lib/utils";
   import type { SortColumn } from "$lib/types";
@@ -59,12 +64,86 @@
   function getFileIcon(name: string, isDir: boolean) {
     if (isDir) return Folder;
     const ext = name.split(".").pop()?.toLowerCase() || "";
-    if (["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "ico"].includes(ext)) return FileImage;
-    if (["mp4", "mkv", "avi", "mov", "webm"].includes(ext)) return FileVideo;
-    if (["mp3", "wav", "flac", "ogg", "aac"].includes(ext)) return FileAudio;
-    if (["zip", "tar", "gz", "bz2", "zst", "rar", "7z"].includes(ext)) return FileArchive;
-    if (["js", "ts", "rs", "py", "c", "cpp", "h", "java", "go", "rb", "sh", "bat", "ps1"].includes(ext)) return FileCode;
-    if (["txt", "md", "doc", "docx", "pdf", "rtf", "odt"].includes(ext)) return FileText;
+
+    // Images
+    if (["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "ico", "tiff", "tif", "avif", "heic", "heif", "raw", "cr2", "nef", "psd", "ai", "eps"].includes(ext)) return FileImage;
+
+    // Video
+    if (["mp4", "mkv", "avi", "mov", "webm", "wmv", "flv", "m4v", "3gp", "ogv", "ts", "m2ts", "vob"].includes(ext)) return Clapperboard;
+
+    // Audio
+    if (["mp3", "wav", "flac", "ogg", "aac", "wma", "m4a", "opus", "mid", "midi", "aiff"].includes(ext)) return Music;
+
+    // Archives
+    if (["zip", "tar", "gz", "bz2", "zst", "rar", "7z", "xz", "lz", "lzma", "cab", "iso", "dmg", "pkg", "deb", "rpm", "apk", "appimage", "snap", "flatpak"].includes(ext)) return FileArchive;
+
+    // Databases
+    if (["db", "sqlite", "sqlite3", "mdb", "accdb", "sql", "dump"].includes(ext)) return Database;
+
+    // Spreadsheets
+    if (["csv", "xlsx", "xls", "ods", "tsv", "numbers"].includes(ext)) return FileSpreadsheet;
+
+    // Presentations
+    if (["pptx", "ppt", "odp", "key"].includes(ext)) return Presentation;
+
+    // Web
+    if (["html", "htm", "xhtml", "php", "asp", "aspx", "jsp", "erb", "ejs", "svelte", "vue", "jsx", "tsx"].includes(ext)) return Globe;
+
+    // JSON/Data
+    if (["json", "jsonl", "json5", "ndjson"].includes(ext)) return FileJson;
+
+    // Config/Settings
+    if (["toml", "yaml", "yml", "ini", "cfg", "conf", "env", "properties", "plist"].includes(ext)) return FileCog;
+
+    // Shell/Terminal
+    if (["sh", "bash", "zsh", "fish", "ps1", "psm1", "bat", "cmd", "com"].includes(ext)) return FileTerminal;
+
+    // Programming languages
+    if (["rs", "go", "c", "cpp", "cc", "cxx", "h", "hpp", "hxx", "java", "kt", "kts", "scala", "clj", "cljs", "erl", "ex", "exs", "hs", "ml", "fs", "fsx", "nim", "zig", "v", "d", "r", "jl", "lua", "tcl", "perl", "pl", "pm"].includes(ext)) return FileCode;
+
+    // Scripting languages
+    if (["js", "mjs", "cjs", "ts", "mts", "py", "rb", "swift", "dart", "groovy", "coffee"].includes(ext)) return Braces;
+
+    // CSS/Styling
+    if (["css", "scss", "sass", "less", "styl", "stylus", "pcss", "postcss"].includes(ext)) return FileType;
+
+    // Documents
+    if (["pdf"].includes(ext)) return FileText;
+    if (["doc", "docx", "odt", "rtf", "tex", "latex", "pages"].includes(ext)) return FileText;
+
+    // Markdown/Text
+    if (["md", "mdx", "markdown", "txt", "text", "log", "changelog", "readme", "license", "licence", "todo", "note", "notes"].includes(ext)) return FileText;
+
+    // XML/Markup
+    if (["xml", "xsl", "xslt", "xsd", "dtd", "wsdl", "rss", "atom", "soap"].includes(ext)) return FileCode;
+
+    // Fonts
+    if (["ttf", "otf", "woff", "woff2", "eot", "fnt"].includes(ext)) return FileType;
+
+    // Security/Keys
+    if (["pem", "crt", "cer", "key", "pub", "p12", "pfx", "jks", "keystore", "gpg", "pgp", "asc", "sig"].includes(ext)) return FileKey;
+
+    // Lock files
+    if (["lock", "lockb"].includes(ext) || name === "Cargo.lock" || name === "package-lock.json" || name === "yarn.lock" || name === "pnpm-lock.yaml") return FileLock;
+
+    // Binary/Executable
+    if (["exe", "msi", "bin", "elf", "out", "app", "dll", "so", "dylib", "a", "lib", "o", "obj", "class", "pyc", "pyo", "wasm"].includes(ext)) return Binary;
+
+    // 3D/CAD
+    if (["obj", "fbx", "stl", "blend", "3ds", "dae", "gltf", "glb", "usdz"].includes(ext)) return Box;
+
+    // Game assets
+    if (["unity", "unitypackage", "asset", "prefab", "scene", "umap", "uasset"].includes(ext)) return Gamepad2;
+
+    // Design
+    if (["fig", "sketch", "xd", "indd"].includes(ext)) return Pen;
+
+    // Disk/System
+    if (["img", "vhd", "vhdx", "vmdk", "qcow2", "vdi"].includes(ext)) return HardDrive;
+
+    // Checksum/Hash
+    if (["md5", "sha1", "sha256", "sha512", "checksum", "sum"].includes(ext)) return Hash;
+
     return File;
   }
 
