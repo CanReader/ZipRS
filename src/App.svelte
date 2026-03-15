@@ -97,8 +97,9 @@
     const path = await dialogOpen({
       title: "Open Archive",
       filters: [
-        { name: "Archives", extensions: ["zip", "tar", "gz", "tgz", "bz2", "tbz2", "zst", "tzst", "jar", "war"] },
+        { name: "Archives", extensions: ["zip", "rar", "tar", "gz", "tgz", "bz2", "tbz2", "zst", "tzst", "jar", "war"] },
         { name: "ZIP files", extensions: ["zip", "jar", "war"] },
+        { name: "RAR files", extensions: ["rar"] },
         { name: "TAR files", extensions: ["tar", "gz", "tgz", "bz2", "tbz2", "zst"] },
         { name: "All files", extensions: ["*"] },
       ],
