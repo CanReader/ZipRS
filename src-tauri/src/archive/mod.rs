@@ -1,4 +1,5 @@
 pub mod entry;
+pub mod rar_backend;
 pub mod tar_backend;
 pub mod zip_backend;
 
@@ -16,6 +17,7 @@ pub enum ArchiveFormat {
     TarBz2,
     TarZst,
     Tar,
+    Rar,
     Gz,
     Bz2,
     Zst,
@@ -39,6 +41,8 @@ impl ArchiveFormat {
             Ok(Self::Tar)
         } else if name.ends_with(".zip") || name.ends_with(".jar") || name.ends_with(".war") {
             Ok(Self::Zip)
+        } else if name.ends_with(".rar") {
+            Ok(Self::Rar)
         } else if name.ends_with(".gz") {
             Ok(Self::Gz)
         } else if name.ends_with(".bz2") {
@@ -57,6 +61,7 @@ impl ArchiveFormat {
             "TarBz2" => Ok(Self::TarBz2),
             "TarZst" => Ok(Self::TarZst),
             "Tar" => Ok(Self::Tar),
+            "Rar" => Ok(Self::Rar),
             _ => bail!("Unknown format: {s}"),
         }
     }
@@ -68,6 +73,7 @@ impl ArchiveFormat {
             Self::TarBz2 => "TAR.BZ2",
             Self::TarZst => "TAR.ZST",
             Self::Tar => "TAR",
+            Self::Rar => "RAR",
             Self::Gz => "GZ",
             Self::Bz2 => "BZ2",
             Self::Zst => "ZST",
@@ -112,6 +118,10 @@ pub fn open_archive(path: &Path) -> Result<Box<dyn ArchiveBackend>> {
         | ArchiveFormat::TarBz2
         | ArchiveFormat::TarZst => {
             let backend = tar_backend::TarBackend::open(path, format)?;
+            Ok(Box::new(backend))
+        }
+        ArchiveFormat::Rar => {
+            let backend = rar_backend::RarBackend::open(path)?;
             Ok(Box::new(backend))
         }
         _ => bail!(
