@@ -37,8 +37,8 @@ impl ZipBackend {
             File::create(path).with_context(|| format!("Cannot create {}", path.display()))?;
         let mut zip = ZipWriter::new(file);
         let options = SimpleFileOptions::default()
-            .compression_method(CompressionMethod::Zstd)
-            .compression_level(Some(19));
+            .compression_method(CompressionMethod::Deflated)
+            .compression_level(Some(9));
 
         let total = files.len() as u64;
         for (i, file_path) in files.iter().enumerate() {
@@ -229,8 +229,8 @@ impl super::ArchiveBackend for ZipBackend {
         }
 
         let options = SimpleFileOptions::default()
-            .compression_method(CompressionMethod::Zstd)
-            .compression_level(Some(19));
+            .compression_method(CompressionMethod::Deflated)
+            .compression_level(Some(9));
 
         let total = files.len() as u64;
         for (i, file_path) in files.iter().enumerate() {
