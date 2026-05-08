@@ -13,6 +13,13 @@ pub struct ArchiveState {
     pub format: Mutex<Option<ArchiveFormat>>,
 }
 
+pub struct PendingOpen(pub Mutex<Option<String>>);
+
+#[tauri::command]
+pub fn consume_pending_open(state: State<'_, PendingOpen>) -> Option<String> {
+    state.0.lock().ok().and_then(|mut g| g.take())
+}
+
 impl ArchiveState {
     pub fn new() -> Self {
         Self {

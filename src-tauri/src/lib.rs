@@ -3,7 +3,9 @@ pub mod cli;
 mod commands;
 pub mod progress;
 
-use commands::ArchiveState;
+use commands::{ArchiveState, PendingOpen};
+use std::sync::Mutex;
+use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -14,21 +16,19 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_drag::init())
         .manage(ArchiveState::new())
+        .manage(PendingOpen(Mutex::new(None)))
         .setup(|app| {
-            // Handle file association: when launched with a file path argument,
-            // emit an event so the frontend can open it automatically.
-            let args: Vec<String> = std::env::args().collect();
-            if args.len() > 1 {
-                let path = &args[1];
-                if std::path::Path::new(path).is_file() {
-                    let handle = app.handle().clone();
-                    let path = path.to_string();
-                    // Delay slightly so the frontend has time to mount listeners
-                    std::thread::spawn(move || {
-                        std::thread::sleep(std::time::Duration::from_millis(500));
-                        use tauri::Emitter;
-                        let _ = handle.emit("open-file-association", &path);
-                    });
+            let args: Vec<String> = std::env::args().skip(1).collect();
+            for arg in &args {
+                let p = std::path::Path::new(arg);
+                if p.is_file() {
+                    let abs = p.canonicalize().unwrap_or_else(|_| p.to_path_buf());
+                    let s = abs.to_string_lossy().to_string();
+                    eprintln!("[ziprs] pending open from argv: {}", s);
+                    if let Some(state) = app.try_state::<PendingOpen>() {
+                        *state.0.lock().unwrap() = Some(s);
+                    }
+                    break;
                 }
             }
             Ok(())
@@ -45,6 +45,7 @@ pub fn run() {
             commands::extract_and_open,
             commands::drag_out,
             commands::close_archive,
+            commands::consume_pending_open,
         ])
         .run(tauri::generate_context!())
         .expect("error while running ZipRS");
