@@ -98,7 +98,12 @@ impl super::ArchiveBackend for TarBackend {
         for entry in archive.entries()? {
             let entry = entry?;
             let header = entry.header();
-            let path = entry.path()?.to_string_lossy().to_string();
+            let raw = entry.path()?.to_string_lossy().to_string();
+            let stripped = raw.trim_start_matches("./");
+            if stripped.is_empty() || stripped == "." {
+                continue;
+            }
+            let path = stripped.to_string();
             let is_directory = header.entry_type().is_dir();
 
             let name = if is_directory {
@@ -169,7 +174,8 @@ impl super::ArchiveBackend for TarBackend {
 
         for entry in archive.entries()? {
             let mut entry = entry?;
-            let path = entry.path()?.to_string_lossy().to_string();
+            let raw = entry.path()?.to_string_lossy().to_string();
+            let path = raw.trim_start_matches("./").to_string();
             let clean_path = path.trim_end_matches('/');
 
             let should_extract = target_entries
