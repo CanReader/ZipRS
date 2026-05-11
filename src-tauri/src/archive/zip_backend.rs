@@ -179,21 +179,26 @@ impl super::ArchiveBackend for ZipBackend {
         progress: &dyn Progress,
     ) -> Result<()> {
         let mut archive = self.open_archive()?;
-        let total = entries.len() as u64;
 
-        for (i, entry_name) in entries.iter().enumerate() {
-            progress.send_progress(i as u64, total, format!("Extracting: {entry_name}"));
+        // First pass: collect indices of all matching entries, expanding directories
+        let mut matched: Vec<usize> = Vec::new();
+        for i in 0..archive.len() {
+            let file = archive.by_index_raw(i)?;
+            let raw_name = file.name().to_string();
+            let name = raw_name.trim_end_matches('/');
+            let keep = entries
+                .iter()
+                .any(|e| name == e.as_str() || name.starts_with(&format!("{}/", e)));
+            if keep {
+                matched.push(i);
+            }
+        }
 
-            let name_with_slash = format!("{entry_name}/");
-            let lookup_name = if archive.by_name(entry_name).is_ok() {
-                entry_name.as_str()
-            } else {
-                name_with_slash.as_str()
-            };
-            let mut file = archive
-                .by_name(lookup_name)
-                .with_context(|| format!("Entry not found: {entry_name}"))?;
-
+        // Second pass: extract matched entries
+        let total = matched.len() as u64;
+        for (i, &idx) in matched.iter().enumerate() {
+            let mut file = archive.by_index(idx)?;
+            progress.send_progress(i as u64, total, format!("Extracting: {}", file.name()));
             let out_path = dest.join(file.name());
             if file.is_dir() {
                 fs::create_dir_all(&out_path)?;
