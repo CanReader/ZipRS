@@ -59,7 +59,7 @@ pub async fn open_archive(
 
     Ok(OpenArchiveResponse {
         entries,
-        format: format!("{:?}", format),
+        format: format.display_name().to_string(),
         path: path_buf.display().to_string(),
         supports_modification: format.supports_modification(),
     })
@@ -161,7 +161,6 @@ pub async fn add_files(
         .clone()
         .ok_or("No archive open")?;
     let file_paths: Vec<PathBuf> = files.iter().map(PathBuf::from).collect();
-    let count = file_paths.len();
 
     let path_clone = archive_path.clone();
     tokio::task::spawn_blocking(move || {
@@ -189,7 +188,7 @@ pub async fn add_files(
     let (entries, format) = result;
     Ok(OpenArchiveResponse {
         entries,
-        format: format!("{:?}", format),
+        format: format.display_name().to_string(),
         path: archive_path.display().to_string(),
         supports_modification: format.supports_modification(),
     })
@@ -234,7 +233,7 @@ pub async fn delete_entries(
     let (entries, format) = result;
     Ok(OpenArchiveResponse {
         entries,
-        format: format!("{:?}", format),
+        format: format.display_name().to_string(),
         path: archive_path.display().to_string(),
         supports_modification: format.supports_modification(),
     })
