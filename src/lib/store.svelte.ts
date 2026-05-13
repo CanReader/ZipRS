@@ -68,7 +68,12 @@ class AppStore {
         case "name": cmp = a.name.localeCompare(b.name, undefined, { sensitivity: "base" }); break;
         case "size": cmp = a.uncompressed_size - b.uncompressed_size; break;
         case "packed": cmp = a.compressed_size - b.compressed_size; break;
-        case "ratio": cmp = a.compressed_size - b.compressed_size; break;
+        case "ratio": {
+          const ra = a.uncompressed_size > 0 ? a.compressed_size / a.uncompressed_size : 1;
+          const rb = b.uncompressed_size > 0 ? b.compressed_size / b.uncompressed_size : 1;
+          cmp = ra - rb;
+          break;
+        }
         case "type": cmp = (a.name.split(".").pop() || "").localeCompare(b.name.split(".").pop() || ""); break;
         case "modified": cmp = (a.modified || "").localeCompare(b.modified || ""); break;
       }
