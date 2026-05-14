@@ -94,7 +94,32 @@ class AppStore {
   openArchiveResult(path: string, entries: ArchiveEntry[], format: string, supportsMod: boolean) {
     this.archivePath = path;
     this.archiveFormat = format;
-    this.allEntries = entries;
+
+    // Synthesise directory entries that some archivers omit
+    const existingPaths = new Set(entries.map((e) => e.path));
+    const syntheticDirs: ArchiveEntry[] = [];
+    for (const entry of entries) {
+      if (entry.is_directory) continue;
+      const parts = entry.path.split("/");
+      for (let depth = 1; depth < parts.length; depth++) {
+        const dirPath = parts.slice(0, depth).join("/");
+        if (!existingPaths.has(dirPath)) {
+          existingPaths.add(dirPath);
+          syntheticDirs.push({
+            path: dirPath,
+            name: parts[depth - 1],
+            is_directory: true,
+            compressed_size: 0,
+            uncompressed_size: 0,
+            modified: null,
+            compression_method: "",
+            crc32: null,
+            encrypted: false,
+          });
+        }
+      }
+    }
+    this.allEntries = [...entries, ...syntheticDirs];
     this.supportsModification = supportsMod;
     this.currentPath = "";
     this.pathHistory = [""];
