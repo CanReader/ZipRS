@@ -4,6 +4,8 @@
 
   let searchInput = $state("");
 
+  $effect(() => { searchInput = store.searchQuery; });
+
   function onSearch() {
     store.searchQuery = searchInput;
   }
