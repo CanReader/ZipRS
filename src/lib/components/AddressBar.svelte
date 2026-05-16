@@ -22,7 +22,9 @@
 
   let segments = $derived(store.currentPath ? store.currentPath.split("/") : []);
   let archiveName = $derived(
-    store.archivePath ? store.archivePath.split("/").pop() || store.archivePath : ""
+    store.archivePath
+      ? store.archivePath.replace(/\\/g, "/").split("/").pop() || store.archivePath
+      : ""
   );
 </script>
 
