@@ -237,10 +237,13 @@
       store.navigateTo(entry.path);
     } else {
       try {
+        store.isBusy = true;
         store.statusMessage = "Extracting file...";
         await invoke("extract_and_open", { entryPath: entry.path });
+        store.isBusy = false;
         store.statusMessage = `Opened: ${entry.name}`;
       } catch (e) {
+        store.isBusy = false;
         store.errorMessage = String(e);
       }
     }
