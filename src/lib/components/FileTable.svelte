@@ -66,12 +66,15 @@
 
     const entryPaths = selected.map((e) => e.path);
     try {
+      store.isBusy = true;
       store.statusMessage = "Extracting for drag...";
       const filePaths = await invoke<string[]>("drag_out", { entries: entryPaths });
+      store.isBusy = false;
       store.statusMessage = `Dragging ${filePaths.length} file(s)...`;
       await startDrag({ item: filePaths, icon: "" });
       store.statusMessage = "Drag complete";
     } catch (e) {
+      store.isBusy = false;
       store.errorMessage = String(e);
     } finally {
       isDragging = false;
