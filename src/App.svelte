@@ -300,7 +300,9 @@
     else if (path.endsWith(".tar")) format = "Tar";
 
     const fileList = files as string[];
-    const baseDir = fileList[0].substring(0, fileList[0].lastIndexOf("/")) || "/";
+    const firstFile = fileList[0];
+    const lastSep = Math.max(firstFile.lastIndexOf("/"), firstFile.lastIndexOf("\\"));
+    const baseDir = lastSep >= 0 ? firstFile.substring(0, lastSep) : "/";
 
     try {
       store.isBusy = true;
