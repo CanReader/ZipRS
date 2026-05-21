@@ -189,6 +189,7 @@
         archivePrefix: store.currentPath,
       });
       store.allEntries = result.entries;
+      store.selectedIndices = [];
       store.isBusy = false;
       store.infoMessage = `Added ${files.length} file(s)`;
       store.statusMessage = `${result.entries.length} entries loaded`;
