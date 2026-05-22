@@ -39,7 +39,7 @@ export function getFileIconColor(name: string, isDir: boolean): string {
     // Video
     mp4: "#e25555", mkv: "#e25555", avi: "#e25555", mov: "#e25555", webm: "#e25555",
     wmv: "#e25555", flv: "#e25555", m4v: "#e25555", "3gp": "#e25555", ogv: "#e25555",
-    ts: "#3178c6", m2ts: "#e25555", vob: "#e25555",
+    m2ts: "#e25555", vob: "#e25555",
 
     // Audio
     mp3: "#1db954", wav: "#1db954", flac: "#f5a623", ogg: "#1db954", aac: "#1db954",
@@ -62,7 +62,7 @@ export function getFileIconColor(name: string, isDir: boolean): string {
     tsv: "#4abb8a", numbers: "#4abb8a",
 
     // Presentations
-    pptx: "#d04423", ppt: "#d04423", odp: "#d04423", key: "#009dff",
+    pptx: "#d04423", ppt: "#d04423", odp: "#d04423",
 
     // Web
     html: "#e34c26", htm: "#e34c26", xhtml: "#e34c26", php: "#777bb3",
