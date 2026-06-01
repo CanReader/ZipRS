@@ -8,13 +8,13 @@
       : 0
   );
 
-  let filename = $derived(() => {
+  let filename = $derived.by(() => {
     const msg = store.progress.message;
     const colonIdx = msg.indexOf(": ");
     return colonIdx >= 0 ? msg.substring(colonIdx + 2) : "";
   });
 
-  let label = $derived(() => {
+  let label = $derived.by(() => {
     const msg = store.progress.message;
     const colonIdx = msg.indexOf(": ");
     return colonIdx >= 0 ? msg.substring(0, colonIdx) : msg;
@@ -39,10 +39,10 @@
         </div>
         <div class="flex-1 min-w-0">
           <p class="text-sm font-semibold text-[var(--text-primary)] leading-tight">
-            {label()}
+            {label}
           </p>
-          {#if filename()}
-            <p class="text-[11px] text-[var(--text-muted)] mt-0.5 truncate font-mono">{filename()}</p>
+          {#if filename}
+            <p class="text-[11px] text-[var(--text-muted)] mt-0.5 truncate font-mono">{filename}</p>
           {/if}
         </div>
         <Loader2 size={16} class="text-[var(--accent)] shrink-0 animate-spin" />
