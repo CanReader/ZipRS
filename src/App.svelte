@@ -69,10 +69,9 @@
       showDropOverlay = false;
     });
 
-    // Handle file association opens (double-click archive in file manager)
-    await listen<string>("open-file-association", (event) => {
-      handleOpenArchive(event.payload);
-    });
+    // Drain any file passed via argv (file association / double-click in file manager)
+    const pending = await invoke<string | null>("consume_pending_open");
+    if (pending) handleOpenArchive(pending);
   });
 
   // ---- Actions ----
