@@ -1,6 +1,6 @@
 <script lang="ts">
   import { store } from "$lib/store.svelte";
-  import { formatSize, formatRatio } from "$lib/utils";
+  import { formatSize, formatRatio, fileTypeDisplay } from "$lib/utils";
   import { X, AlertCircle, CheckCircle, Info } from "lucide-svelte";
 
   interface Props {
@@ -98,7 +98,7 @@
         <div class="space-y-1.5 text-xs">
           <div class="prop-row"><span class="prop-label">Name:</span><span>{e.name}</span></div>
           <div class="prop-row"><span class="prop-label">Path:</span><span class="truncate">{e.path}</span></div>
-          <div class="prop-row"><span class="prop-label">Type:</span><span>{e.is_directory ? "Folder" : e.name.split(".").pop()?.toUpperCase() + " File"}</span></div>
+          <div class="prop-row"><span class="prop-label">Type:</span><span>{fileTypeDisplay(e.name, e.is_directory)}</span></div>
           <div class="prop-row"><span class="prop-label">Size:</span><span>{formatSize(e.uncompressed_size)}</span></div>
           <div class="prop-row"><span class="prop-label">Packed:</span><span>{formatSize(e.compressed_size)}</span></div>
           <div class="prop-row"><span class="prop-label">Ratio:</span><span>{formatRatio(e.compressed_size, e.uncompressed_size)}</span></div>
