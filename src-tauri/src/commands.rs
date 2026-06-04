@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{Component, PathBuf};
 use std::sync::Mutex;
 
 use serde::Serialize;
@@ -309,7 +309,12 @@ pub async fn extract_and_open(
             .extract_entries(&[entry_path.clone()], &tmp_dir, &progress)
             .map_err(|e| e.to_string())?;
 
-        Ok::<_, String>(tmp_dir.join(&entry_path))
+        // Sanitise: strip any non-Normal path components before joining
+        let safe: PathBuf = std::path::Path::new(&entry_path)
+            .components()
+            .filter(|c| matches!(c, Component::Normal(_)))
+            .collect();
+        Ok::<_, String>(tmp_dir.join(safe))
     })
     .await
     .map_err(|e| e.to_string())??;
@@ -349,10 +354,14 @@ pub async fn drag_out(
     .await
     .map_err(|e| e.to_string())??;
 
-    // Collect the extracted file paths
+    // Collect the extracted file paths, sanitising entry paths before joining
     let mut file_paths: Vec<String> = Vec::new();
     for entry in &entries {
-        let full_path = tmp_dir.join(entry);
+        let safe: PathBuf = std::path::Path::new(entry)
+            .components()
+            .filter(|c| matches!(c, Component::Normal(_)))
+            .collect();
+        let full_path = tmp_dir.join(safe);
         if full_path.exists() {
             file_paths.push(full_path.display().to_string());
         }
