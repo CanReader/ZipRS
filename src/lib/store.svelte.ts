@@ -139,6 +139,7 @@ class AppStore {
       this.currentPath = path;
       this.selectedIndices = [];
       this.lastClickedIndex = null;
+      this.searchQuery = "";
     }
   }
 
