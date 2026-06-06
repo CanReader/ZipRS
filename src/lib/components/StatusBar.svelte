@@ -6,7 +6,7 @@
     store.visibleEntries.reduce((sum, e) => sum + e.uncompressed_size, 0)
   );
   let entryCount = $derived(store.visibleEntries.length);
-  let selCount = $derived(store.selectedIndices.length);
+  let selCount = $derived(store.selectedEntries.length);
   let selSize = $derived(
     store.selectedEntries.reduce((sum, e) => sum + e.uncompressed_size, 0)
   );
