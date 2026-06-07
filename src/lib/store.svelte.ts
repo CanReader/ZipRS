@@ -128,6 +128,8 @@ class AppStore {
     this.lastClickedIndex = null;
     this.searchQuery = "";
     this.isBusy = false;
+    this.errorMessage = null;
+    this.infoMessage = null;
     this.statusMessage = `${entries.length} entries loaded`;
   }
 
