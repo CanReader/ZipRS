@@ -186,6 +186,11 @@ class AppStore {
     this.searchQuery = "";
     this.isBusy = false;
     this.statusMessage = "Ready";
+    this.errorMessage = null;
+    this.infoMessage = null;
+    this.showAbout = false;
+    this.showProperties = false;
+    this.showCreateDialog = false;
   }
 
   setTheme(id: string) {
