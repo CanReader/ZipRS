@@ -301,6 +301,7 @@ pub async fn extract_and_open(
 
     let extracted_path = tokio::task::spawn_blocking(move || {
         let tmp_dir = std::env::temp_dir().join("ziprs_preview");
+        let _ = std::fs::remove_dir_all(&tmp_dir);
         let _ = std::fs::create_dir_all(&tmp_dir);
 
         let progress = GuiProgress::new(app);
