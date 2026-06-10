@@ -78,6 +78,7 @@
   async function handleAction(action: string) {
     switch (action) {
       case "open": await handleOpenDialog(); break;
+      case "close": handleCloseArchive(); break;
       case "create": await handleCreateDialog(); break;
       case "add": await handleAddDialog(); break;
       case "extract": await handleExtractAll(); break;
@@ -95,6 +96,11 @@
       case "up": store.navigateUp(); break;
       case "select-all": store.selectAll(); break;
     }
+  }
+
+  function handleCloseArchive() {
+    invoke("close_archive");
+    store.reset();
   }
 
   async function handleOpenDialog() {

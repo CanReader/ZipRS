@@ -2,7 +2,7 @@
   import {
     ArrowLeft, ArrowRight, ArrowUp, FolderOpen, Plus,
     Download, FolderDown, ShieldCheck, Trash2, Info,
-    FilePlus2, RefreshCw
+    FilePlus2, RefreshCw, X
   } from "lucide-svelte";
   import { store } from "$lib/store.svelte";
   import ThemeSwitcher from "./ThemeSwitcher.svelte";
@@ -38,6 +38,12 @@
     class="tbtn with-label" title="Open archive (Ctrl+O)">
     <FolderOpen size={17} strokeWidth={1.8} class="text-blue-400" />
     <span>Open</span>
+  </button>
+
+  <button onclick={() => onAction("close")} disabled={!store.hasArchive || store.isBusy}
+    class="tbtn with-label" title="Close archive">
+    <X size={17} strokeWidth={1.8} class="text-gray-400" />
+    <span>Close</span>
   </button>
 
   <button onclick={() => onAction("add")} disabled={!store.hasArchive || !store.canModify || store.isBusy}
