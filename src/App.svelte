@@ -359,6 +359,20 @@
         case "Enter": handleAction("open-file"); break;
         case "Backspace": handleAction("up"); break;
         case "F5": e.preventDefault(); handleAction("refresh"); break;
+        case "ArrowUp":
+        case "ArrowDown": {
+          if (!store.hasArchive || (document.activeElement as HTMLElement)?.tagName === "INPUT") break;
+          e.preventDefault();
+          const cur = store.selectedIndices.length === 1 ? store.selectedIndices[0] : -1;
+          const next = e.key === "ArrowUp"
+            ? Math.max(0, cur - 1)
+            : Math.min(store.visibleEntries.length - 1, cur + 1);
+          if (next >= 0) {
+            store.selectedIndices = [next];
+            store.lastClickedIndex = next;
+          }
+          break;
+        }
       }
     }
   }
