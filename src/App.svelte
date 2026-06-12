@@ -76,6 +76,8 @@
 
   // ---- Actions ----
   async function handleAction(action: string) {
+    // Dismiss any previous error when the user takes a new action
+    store.errorMessage = null;
     switch (action) {
       case "open": await handleOpenDialog(); break;
       case "close": handleCloseArchive(); break;
