@@ -68,7 +68,7 @@
       <p class="text-xs text-[var(--text-secondary)] mt-3">Version 0.1.0</p>
       <div class="mt-4 text-xs text-[var(--text-secondary)]">
         <p class="font-semibold mb-1">Supported formats:</p>
-        <p>ZIP (Zstd), TAR, TAR.GZ, TAR.BZ2, TAR.ZST</p>
+        <p>ZIP, RAR, TAR, TAR.GZ, TAR.BZ2, TAR.ZST</p>
       </div>
       <p class="text-[10px] text-[var(--text-muted)] mt-4">Built with Rust + Tauri + Svelte</p>
       <button onclick={() => store.showAbout = false}
