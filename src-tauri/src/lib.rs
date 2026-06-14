@@ -9,6 +9,15 @@ use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // WebKit2GTK 2.46+ defaults to a DMA-BUF renderer that can break the
+    // custom URI scheme handler (tauri://localhost) on some Linux desktops,
+    // causing a "Connection refused" error on startup.  Disable it before
+    // Tauri / Wry initialise the WebView.
+    #[cfg(target_os = "linux")]
+    {
+        std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
+    }
+
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
