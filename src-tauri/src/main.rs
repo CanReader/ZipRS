@@ -37,11 +37,11 @@ fn main() {
             std::process::exit(1);
         }
     } else {
-        // GUI mode
-        if std::env::var("WAYLAND_DISPLAY").is_ok() {
-            std::env::set_var("GDK_BACKEND", "x11");
-            std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
-        }
+        // GUI mode — disable DMA-BUF renderer unconditionally on Linux;
+        // it breaks the custom URI scheme (tauri://) on WebKit2GTK 2.46+.
+        #[cfg(target_os = "linux")]
+        std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
+
         ziprs_lib::run();
     }
 }
